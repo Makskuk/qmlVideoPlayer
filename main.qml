@@ -4,32 +4,40 @@ import Qt.labs.folderlistmodel 2.1
 
 Window {
     visible: true
-    width: 360
-    height: 360
+    width: 400
+    height: 500
 
-    Rectangle {
-        id: main
-        anchors.fill: parent
-
-        ListView {
-            width: 360
-            height: 360
-           FolderListModel {
-               id: folderList
-               nameFilters: ["*"]
-               folder: "file:///home/kuklin_m"
+    ListView {
+       anchors.fill: parent
+       FolderListModel {
+           id: folderList
+           nameFilters: ["*"]
+           folder: "file:///home/kuklin_m"
+       }
+       Component {
+           id: fileDelegate
+           Rectangle {
+               id: fileItem
+               height: 30
+               width: parent.width
+               color: "lightblue"
+               Text {
+                   text: fileName
+                   anchors.verticalCenter: parent.verticalCenter
+               }
+              MouseArea {
+                  anchors.fill: parent
+                  hoverEnabled: true
+                  onEntered: {
+                      parent.color = "green"
+                  }
+                  onExited: {
+                      parent.color = "lightblue"
+                  }
+              }
            }
-           Component {
-               id: fileDelegate
-               Text { text: fileName }
-           }
-           model: folderList
-           delegate: fileDelegate
-        }
-        Text {
-            id: lable
-            text: folderList.count
-            y: main.height - lable.height
-        }
-   }
+       }
+       model: folderList
+       delegate: fileDelegate
+    }
 }
