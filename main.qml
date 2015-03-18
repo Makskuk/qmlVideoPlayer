@@ -1,43 +1,57 @@
 import QtQuick 2.3
 import QtQuick.Window 2.2
-import Qt.labs.folderlistmodel 2.1
+import QtMultimedia 5.0
 
 Window {
     visible: true
     width: 400
     height: 500
 
-    ListView {
-       anchors.fill: parent
-       FolderListModel {
-           id: folderList
-           nameFilters: ["*"]
-           folder: "file:///home/kuklin_m"
-       }
-       Component {
-           id: fileDelegate
-           Rectangle {
-               id: fileItem
-               height: 30
-               width: parent.width
-               color: "lightblue"
-               Text {
-                   text: fileName
-                   anchors.verticalCenter: parent.verticalCenter
-               }
-              MouseArea {
-                  anchors.fill: parent
-                  hoverEnabled: true
-                  onEntered: {
-                      parent.color = "green"
-                  }
-                  onExited: {
-                      parent.color = "lightblue"
-                  }
-              }
-           }
-       }
-       model: folderList
-       delegate: fileDelegate
+    Rectangle {
+        id: fileBtn
+        width: 80
+        height: 40
+        radius: 20
+        color: "lightblue"
+        Text {
+            text: qsTr("File")
+            anchors.centerIn: parent
+        }
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            onEntered: { parent.color = "blue" }
+            onExited: { parent.color = "lightblue" }
+            onClicked: { fileManager.visible = true; fileBtn.visible = false }
+        }
+    }
+
+    Rectangle {
+        width: parent.width
+        height: parent.height - fileBtn.height
+        anchors.bottom: parent.bottom
+        color: "black"
+
+        MediaPlayer {
+                id: player
+                source: ""
+                autoPlay: true
+            }
+
+            VideoOutput {
+                id: videoOutput
+                source: player
+                anchors.fill: parent
+            }
+    }
+
+    FileManager {
+        id: fileManager
+        visible: false
+        onFileClicked: {
+            player.source = fileURL;
+            this.visible = false;
+            fileBtn.visible = true;
+        }
     }
 }
